@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Хочу питсы</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Анонимный опрос</h1>
+    <form method="POST" action="/results" id="myForm">
+        <div class="question-container">  <!-- Контейнер для вопроса -->
+            <label for="name">Ваше имя:</label><br>
+            <input type="text" id="name" name="name"><br><br>
+        </div>
+
+        <div class="question-container">
+            <label for="question1">Вопрос 1: Любимый размер</label><br>
+            <select id="question1" name="question1">
+                <option value="13">13</option>
+                <option value="17">17</option>
+                <option value="32">32</option>
+                <option value="сегодня пятница">сегодня пятница</option>
+                <option value="ДА">ДА</option>
+                <option value="16 дюймов">16 дюймов</option>
+            </select><br><br>
+        </div>
+
+
+        <div class="question-container">
+            <label for="question2">Вопрос 2:  Есть ли вероятность что вы гей?</label><br>
+            <div class="radio-container">
+                <label class="radio-label" id="yes-label">
+                    <input type="radio" id="yes" name="question2" value="yes">
+                    <span id="yes-text">нет</span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" id="no" name="question2" value="no">
+                    <span>да</span>
+                </label>
+            </div><br><br>
+        </div>
+
+       <input type="hidden" id="yes_clicks" name="yes_clicks" value="0">
+        <input type="submit" value="Отправить">
+    </form>
+
+   <script>
+      const buttonYes = document.getElementById('yes-label');
+      const yesText = document.getElementById('yes-text');
+      const buttonNo = document.getElementById('no');
+      const form = document.querySelector('form');
+      const yesClicksInput = document.getElementById('yes_clicks');
+      let moving = false;
+      let clicks = 0;
+
+      function moveButton() {
+          if (!moving) return;
+          const maxX = form.offsetWidth - buttonYes.offsetWidth;
+          const maxY = form.offsetHeight - buttonYes.offsetHeight;
+          const newX = Math.floor(Math.random() * maxX);
+          const newY = Math.floor(Math.random() * maxY);
+          buttonYes.style.position = 'absolute';
+          buttonYes.style.left = newX + 'px';
+          buttonYes.style.top = newY + 'px';
+          buttonYes.querySelector('input').checked = false;
+          clicks++;
+          yesClicksInput.value = clicks;
+      }
+
+      buttonYes.addEventListener('click', function(event) { //Обработчик события
+          event.preventDefault(); // предотвращает отправку формы
+          moving = true;
+          moveButton();
+      });
+
+      buttonNo.addEventListener('click', function() {
+          moving = false;
+      });
+
+      document.getElementById('myForm').addEventListener('submit', function(event) {
+          event.preventDefault();
+          fetch('/results', {
+              method: 'POST',
+              body: new FormData(this),
+          })
+          .then(response => response.text())
+          .then(data => {
+              alert(data);
+          });
+          clicks = 0;
+          moving = false;
+      });
+
+    </script>
+</body>
+</html>
