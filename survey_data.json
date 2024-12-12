@@ -1,0 +1,12 @@
+{
+    "127.0.0.1": {
+        "attempts": 0,
+        "answers": [
+            {
+                "name": "олег",
+                "question1": "green"
+            }
+        ],
+        "yes_clicks": 0
+    }
+}
